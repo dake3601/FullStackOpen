@@ -40,6 +40,8 @@ const App = () => {
       <p>has {points[selected]} votes</p>
       <Button text={'vote'} onClick={handleVotes}/>
       <Button text={'next anecdote'} onClick={getRandomInt}/>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[points.indexOf(Math.max(...points))]}</p>
     </div>
   )
 }
