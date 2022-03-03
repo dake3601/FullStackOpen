@@ -11,17 +11,25 @@ const Button = (props) => {
 // a proper place to define a component
 const Statistics = ({good, neutral, bad}) => {
   const total = good + neutral + bad
-  return (
-    <> 
-      <h1>statistics</h1>
-      <p>good {good} </p>
-      <p>neutral {neutral} </p>
-      <p>bad {bad} </p>
-      <p>all {good-bad} </p>
-      <p>average {(good-bad)/total || 0} </p>
-      <p>positive {100 * good/total || 0} % </p>
-    </>
-  )
+  if (total === 0) 
+    return (
+      <>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </>
+    )
+  else 
+    return (
+      <> 
+        <h1>statistics</h1>
+        <p>good {good} </p>
+        <p>neutral {neutral} </p>
+        <p>bad {bad} </p>
+        <p>all {good-bad} </p>
+        <p>average {(good-bad)/total || 0} </p>
+        <p>positive {100 * good/total || 0} % </p>
+      </>
+    )
 }
 
 const App = () => {
