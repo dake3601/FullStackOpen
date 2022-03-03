@@ -8,27 +8,34 @@ const Button = (props) => {
   )
 }
 
+const StatisticLine = ({text, value}) => {
+  const sign = text === 'positive' ? '%' : ''
+  return (
+    <p>{text} {value} {sign} </p>
+  )
+}
+
 // a proper place to define a component
 const Statistics = ({good, neutral, bad}) => {
   const total = good + neutral + bad
   if (total === 0) 
     return (
-      <>
+      <div>
         <h1>statistics</h1>
         <p>No feedback given</p>
-      </>
+      </div>
     )
   else 
     return (
-      <> 
+      <div> 
         <h1>statistics</h1>
-        <p>good {good} </p>
-        <p>neutral {neutral} </p>
-        <p>bad {bad} </p>
-        <p>all {good-bad} </p>
-        <p>average {(good-bad)/total || 0} </p>
-        <p>positive {100 * good/total || 0} % </p>
-      </>
+        <StatisticLine text="good" value ={good} />
+        <StatisticLine text="neutral" value ={neutral} />
+        <StatisticLine text="bad" value ={bad} />
+        <StatisticLine text="all" value ={good-bad} />
+        <StatisticLine text="average" value ={(good-bad)/total} />
+        <StatisticLine text="positive" value ={100 * good/total} />
+      </div>
     )
 }
 
