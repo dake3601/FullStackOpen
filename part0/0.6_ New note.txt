@@ -1,0 +1,16 @@
+title 0.6 New note
+
+note over browser
+browser sends POST request with new note
+end note
+
+browser-server HTTP POST httpsstudies.cs.helsinki.fiexampleappnew_note_spa
+
+note over server
+server adds new note 
+(kept until server restart)
+end note
+
+note over browser
+browser renders the new note
+end note
