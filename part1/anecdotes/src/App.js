@@ -20,16 +20,26 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0))
 
-  function getRandomInt() {
-    return Math.floor(Math.random() * anecdotes.length);
+  const getRandomInt = () => {
+    const random = Math.floor(Math.random() * anecdotes.length);
+    setSelected(random)
+  }
+
+  const handleVotes = () => {
+    const copy = [...points]
+    copy[selected] += 1
+    setPoints(copy) 
   }
 
   return (
     <div>
-      {anecdotes[selected]}
-      <br/>
-      <Button text={'next anecdote'} onClick={() => setSelected(getRandomInt())}/>
+      <h1>Anecdote of the day</h1>
+      <p>{anecdotes[selected]}</p>
+      <p>has {points[selected]} votes</p>
+      <Button text={'vote'} onClick={handleVotes}/>
+      <Button text={'next anecdote'} onClick={getRandomInt}/>
     </div>
   )
 }
