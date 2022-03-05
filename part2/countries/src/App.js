@@ -12,6 +12,28 @@ const Filter = ({ filter, handleFilterChange}) => (
   </form>
 )
 
+const Weather = ({ capital }) => {
+  const [weather, setWeather] = useState([])
+  const api_key = process.env.REACT_APP_API_KEY
+
+  useEffect(() => {
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&units=metric&appid=${api_key}`)
+      .then(response => {
+        setWeather(response.data)
+      })
+  }, [api_key, capital])
+
+  return (
+    <div>
+      <h3>Weather in {capital}</h3>
+      {weather?.main?.temp && <p>temperature {weather.main.temp} Celsius</p>}
+      {weather?.weather && <img src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].description}/>}
+      {weather?.wind?.speed && <p>wind {weather.wind.speed} m/s</p>}
+    </div>
+  )
+}
+
 const Country = ({ country }) => {
   const languages = Object.values(country.languages)
   const src = country.flags.png
@@ -20,12 +42,13 @@ const Country = ({ country }) => {
       <h2>{country.name.common}</h2>
       <p>capital {country.capital[0]}</p>
       <p>area {country.area}</p>
-      <h3>languages:</h3>
+      <h3>Languages:</h3>
       <ul>
         {languages.map(lang => 
           <li key={lang}>{lang}</li>)}
       </ul>
       <img src={src} alt={`Flag of ${country.name.common}`}/>
+      <Weather capital={country.capital[0]}/>
     </div>
   )
 }
@@ -86,7 +109,7 @@ const App = () => {
         handleFilterChange={handleFilterChange}
 
       />
-      { filter !== '' &&
+      {filter !== '' &&
         <Countries 
           countriesToShow={countriesToShow} 
           setNewFilter={setNewFilter}
