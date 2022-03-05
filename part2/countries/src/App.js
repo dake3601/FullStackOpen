@@ -12,39 +12,54 @@ const Filter = ({ filter, handleFilterChange}) => (
   </form>
 )
 
-const Countries = ({ countriesToShow }) => {
+const Country = ({ country }) => {
+  const languages = Object.values(country.languages)
+  const src = country.flags.png
+  return (
+    <div>
+      <h2>{country.name.common}</h2>
+      <p>capital {country.capital[0]}</p>
+      <p>area {country.area}</p>
+      <h3>languages:</h3>
+      <ul>
+        {languages.map(lang => 
+          <li key={lang}>{lang}</li>)}
+      </ul>
+      <img src={src} alt={`Flag of ${country.name.common}`}/>
+    </div>
+  )
+}
+
+const Countries = ({ countriesToShow, setNewFilter }) => {
   if (countriesToShow.length > 10) {
     return (
       <p>Too many matches, specify another filter</p>
     )
   } else if (countriesToShow.length === 1) {
     const country = countriesToShow[0]
-    const languages = Object.values(country.languages)
-    const src = country.flags.png
     return (
-      <div>
-        <h2>{country.name.common}</h2>
-        <p>capital {country.capital[0]}</p>
-        <p>area {country.area}</p>
-        <h3>languages:</h3>
-        <ul>
-          {languages.map(lang => 
-            <li key={lang}>{lang}</li>)}
-        </ul>
-        <img src={src} alt={`Flag of ${country.name.common}`}/>
-      </div>
+      <Country country={country}/>
+    )
+  } else {
+    return (
+      <ul>
+        {countriesToShow.map(({ name }) =>
+          <li key={name.common}>
+            {name.common}
+            <button onClick={() => setNewFilter(name.common)}>
+              show
+            </button>
+          </li>
+          )
+        }
+      </ul>
     )
   }
-  return (
-    <ul>
-      {countriesToShow.map(({ name }) => <li key={name.common}>{name.common}</li>)}
-    </ul>
-  )
 }
 
 const App = () => {
   const [countries, setCountries] = useState([])
-  const [filter, setNewFilter] = useState('');
+  const [filter, setNewFilter] = useState('')
 
   useEffect(() => {
     axios
@@ -74,6 +89,7 @@ const App = () => {
       { filter !== '' &&
         <Countries 
           countriesToShow={countriesToShow} 
+          setNewFilter={setNewFilter}
         />
       }
     </div>
