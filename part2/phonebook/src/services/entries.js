@@ -15,9 +15,15 @@ const remove = id => {
   return axios.delete(`${baseUrl}/${id}`).then()
 }
 
+const update = (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject)
+  return request.then(response => response.data)
+}
+
 const entriesService = { 
   getAll, 
-  create, 
+  create,
+  update,
   remove
 }
 

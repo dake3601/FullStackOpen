@@ -74,18 +74,36 @@ const App = () => {
 
     const repeat = persons.reduce((s, p) => s || personObject.name === p.name, false)
 
-    if (repeat) {
-      window.alert(`${newName} is already added to phonebook`)
-      return 
-    } 
-
-    entriesService
+    if (!repeat) {
+      entriesService
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       })
+      return 
+    } 
+    
+    if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+      const person = persons.find(p => p.name === newName)
+      const id = person.id
+      const changedPerson = { ...person, number: newNumber }
+
+      entriesService
+        .update(person.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => {
+          alert(`the person '${person.name}' was already deleted from server`)
+          setPersons(persons.filter(p => p.id !== id))
+          setNewName('')
+          setNewNumber('')
+        })
+      }
   }
   
   const deletePerson = (person) => {
