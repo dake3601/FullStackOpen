@@ -32,11 +32,22 @@ const PersonForm = ({ addPerson, newName, handleNameChange, newNumber, handlePho
   </form>
 )
 
-const Person = ( { person } ) => <li>{person.name} {person.number}</li>
-
-const Persons = ({ personsToShow }) => (
+const Person = ( { person, deletePerson } ) => (
+  <li>
+    {person.name} {person.number}
+    <button onClick={() => deletePerson(person)}>
+      delete
+    </button>
+  </li>
+)
+const Persons = ({ personsToShow, deletePerson }) => (
   <ul>
-    {personsToShow.map((person) => <Person key={person.name} person={person}/>)}
+    {personsToShow.map((person) => 
+      <Person 
+        key={person.name} 
+        person={person}
+        deletePerson={deletePerson}
+      />)}
   </ul>
 )
 
@@ -76,6 +87,20 @@ const App = () => {
         setNewNumber('')
       })
   }
+  
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      const deletedPerson = persons.filter(p => p.id !== person.id)
+      entriesService.remove(person.id)
+      .then(() => {
+        setPersons(deletedPerson)
+      })
+      .catch(error => {
+        alert(`the person '${person.name}' was already deleted from server`)
+        setPersons(deletedPerson)
+      })
+  }
+  }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -112,7 +137,8 @@ const App = () => {
       />
       <h2>Numbers</h2>
       <Persons 
-        personsToShow={personsToShow} 
+        personsToShow={personsToShow}
+        deletePerson={deletePerson}
       />
     </div>
   )
