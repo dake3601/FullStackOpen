@@ -3,8 +3,10 @@ const Notification = ({ message }) => {
     return null
   }
 
+  const { info, succeed } = message
+
   const style = {
-    color: 'green',
+    color: succeed ? 'green' : 'red',
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -15,7 +17,7 @@ const Notification = ({ message }) => {
 
   return (
     <div style={style}>
-      {message}
+      {info}
     </div>
   )
 }

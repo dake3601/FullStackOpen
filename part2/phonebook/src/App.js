@@ -57,7 +57,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     entriesService
@@ -80,9 +80,12 @@ const App = () => {
       entriesService
       .create(personObject)
       .then(returnedPerson => {
-        setErrorMessage(`Added ${newName}`)
+        setMessage({
+          info: `Added ${newName}`, 
+          succeed: true
+        })
         setTimeout(() => {
-          setErrorMessage(null)
+          setMessage(null)
         }, 3000)
         setPersons(persons.concat(returnedPerson))
         setNewName('')
@@ -99,16 +102,25 @@ const App = () => {
       entriesService
         .update(person.id, changedPerson)
         .then(returnedPerson => {
-          setErrorMessage(`Changed ${newName}`)
+          setMessage({
+            info: `Changed ${newName}`, 
+            succeed: true
+          })
           setTimeout(() => {
-            setErrorMessage(null)
+            setMessage(null)
           }, 3000)
           setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
           setNewName('')
           setNewNumber('')
         })
         .catch(error => {
-          alert(`the person '${person.name}' was already deleted from server`)
+          setMessage({
+            info: `Information of ${person.name} has already been removed from server`,
+            succeed: false
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
           setPersons(persons.filter(p => p.id !== id))
           setNewName('')
           setNewNumber('')
@@ -124,7 +136,13 @@ const App = () => {
         setPersons(deletedPerson)
       })
       .catch(error => {
-        alert(`the person '${person.name}' was already deleted from server`)
+        setMessage({
+          info: `Information of ${person.name} has already been removed from server`,
+          succeed: false
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
         setPersons(deletedPerson)
       })
   }
@@ -150,7 +168,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={errorMessage} />
+      <Notification message={message} />
       <Filter 
         filter={filter} 
         handleFilterChange={handleFilterChange}
