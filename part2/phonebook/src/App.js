@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import entriesService from './services/entries'
+import Notification from './components/Notification'
 
 const Filter = ({ filter, handleFilterChange}) => (
   <form>
@@ -56,6 +57,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     entriesService
@@ -78,6 +80,10 @@ const App = () => {
       entriesService
       .create(personObject)
       .then(returnedPerson => {
+        setErrorMessage(`Added ${newName}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
@@ -93,6 +99,10 @@ const App = () => {
       entriesService
         .update(person.id, changedPerson)
         .then(returnedPerson => {
+          setErrorMessage(`Changed ${newName}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 3000)
           setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
           setNewName('')
           setNewNumber('')
@@ -140,6 +150,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={errorMessage} />
       <Filter 
         filter={filter} 
         handleFilterChange={handleFilterChange}
