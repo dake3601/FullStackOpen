@@ -124,15 +124,12 @@ const App = () => {
         })
         .catch(error => {
           setMessage({
-            info: `Information of ${person.name} has already been removed from server`,
+            info: error.response.data.error, 
             succeed: false
           })
           setTimeout(() => {
             setMessage(null)
           }, 5000)
-          setPersons(persons.filter(p => p.id !== id))
-          setNewName('')
-          setNewNumber('')
         })
       }
   }
