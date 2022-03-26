@@ -85,14 +85,36 @@ const App = () => {
   }
 
   const likeBlog = (id, blogObject) => {
+    const likedBlog = blogs.map(blog => ({
+      ...blog,
+      likes: blog.likes + (blog.id === id)
+    }))
     blogService
       .update(id, blogObject)
       .then(returnedBlog => {
-        setBlogs(blogs.map(blog => ({
-          ...blog,
-          likes: blog.likes + (blog.id === returnedBlog.id)
-        })))
+        setBlogs(likedBlog)
       })
+  }
+
+  const removeBlog = (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      const removedBlog = blogs.filter(b => b.id !== blog.id)
+      blogService
+        .remove(blog.id)
+        .then(() => {
+          setBlogs(removedBlog)
+        })
+        .catch(error => {
+          setMessage({
+            info: `Information of ${blog.title} has already been removed from server`,
+            succeed: false
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setBlogs(removedBlog)
+        })
+    }
   }
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
@@ -143,7 +165,12 @@ const App = () => {
       </Togglable>
       <br />
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={likeBlog}/>
+        <Blog key={blog.id} 
+              blog={blog} 
+              updateBlog={likeBlog} 
+              remove={blog.user.username === user.username}
+              deleteBlog={removeBlog}
+              />
       )}
     </div>
   )
