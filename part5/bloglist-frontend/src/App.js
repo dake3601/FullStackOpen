@@ -84,6 +84,17 @@ const App = () => {
       })
   }
 
+  const likeBlog = (id, blogObject) => {
+    blogService
+      .update(id, blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => ({
+          ...blog,
+          likes: blog.likes + (blog.id === returnedBlog.id)
+        })))
+      })
+  }
+
   if (user === null) {
     return (
       <div>
@@ -130,7 +141,7 @@ const App = () => {
       </Togglable>
       <br />
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={likeBlog}/>
       )}
     </div>
   )
