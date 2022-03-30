@@ -51,7 +51,7 @@ describe('Blog app', function() {
       })
     })
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       const author = 'John Doe'
       const title = 'A Guide on React'
       cy.contains('new blog').click()
@@ -62,6 +62,32 @@ describe('Blog app', function() {
 
       cy.contains(`A new blog ${title} by ${author} added`)
       cy.get('#blogs').contains(`${title} by ${author}`)  
+    })
+
+    describe('and a blog exists', function() {
+      beforeEach(function() {
+        cy.request({
+          url: 'http://localhost:3003/api/blogs',
+          method: 'POST',
+          body: { 
+            title: 'A Guide on React',
+            author: 'John Doe',
+            url: 'https://reactjs.org/'
+          },
+          headers: {
+            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
+          }
+        })
+
+        cy.visit('http://localhost:3000')
+      })
+  
+      it.only('User can like a blog', function() {
+        cy.contains('view').click()
+        cy.contains('likes 0')
+        cy.contains('like').click()
+        cy.contains('likes 1')
+      })
     })
   })
 })
