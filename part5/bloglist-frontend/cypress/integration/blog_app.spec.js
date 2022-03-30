@@ -40,4 +40,28 @@ describe('Blog app', function() {
         .and('have.css', 'border-style', 'solid')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.request('POST', 'http://localhost:3003/api/login', {
+        username: 'testUser', password: 'password'
+      }).then(response => {
+      localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
+      cy.visit('http://localhost:3000')
+      })
+    })
+
+    it.only('A blog can be created', function() {
+      const author = 'John Doe'
+      const title = 'A Guide on React'
+      cy.contains('new blog').click()
+      cy.get('#title-input').type(title)
+      cy.get('#author-input').type(author)
+      cy.get('#url-input').type('https://reactjs.org/')
+      cy.get('#create-blog').click()
+
+      cy.contains(`A new blog ${title} by ${author} added`)
+      cy.get('#blogs').contains(`${title} by ${author}`)  
+    })
+  })
 })
