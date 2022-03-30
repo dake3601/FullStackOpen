@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('<Blog />', () => {
   let container
+  const mockHandler = jest.fn()
 
   const blog = {
     title: 'A Guide on React',
@@ -18,6 +19,7 @@ describe('<Blog />', () => {
     container = render(
       <Blog
         blog={blog}
+        updateBlog={mockHandler}
       />
     ).container
   })
@@ -55,5 +57,13 @@ describe('<Blog />', () => {
     expect(divHide).toHaveTextContent('First Last')
     expect(divHide).not.toHaveTextContent('https://reactjs.org/')
     expect(divHide).not.toHaveTextContent('10')
+  })
+
+  test('clicking the button twice calls event handler twice', () => {
+    const button = screen.getByText('like')
+    userEvent.click(button)
+    userEvent.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })
