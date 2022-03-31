@@ -1,13 +1,11 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
-      name: 'First Last',
+    cy.createUser({
+      name: 'Test Name',
       username: 'testUser',
       password: 'password'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users/', user) 
-    cy.visit('http://localhost:3000')
+    })
   })
 
   it('Login form is shown', function() {
@@ -43,12 +41,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.request('POST', 'http://localhost:3003/api/login', {
-        username: 'testUser', password: 'password'
-      }).then(response => {
-      localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
-      cy.visit('http://localhost:3000')
-      })
+      cy.login({ username: 'testUser', password: 'password' })
     })
 
     it('A blog can be created', function() {
@@ -66,27 +59,45 @@ describe('Blog app', function() {
 
     describe('and a blog exists', function() {
       beforeEach(function() {
-        cy.request({
-          url: 'http://localhost:3003/api/blogs',
-          method: 'POST',
-          body: { 
-            title: 'A Guide on React',
-            author: 'John Doe',
-            url: 'https://reactjs.org/'
-          },
-          headers: {
-            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
-          }
+        cy.createBlog({
+          title: 'A Guide on React',
+          author: 'John Doe',
+          url: 'https://reactjs.org/'
         })
-
-        cy.visit('http://localhost:3000')
       })
   
-      it.only('User can like a blog', function() {
+      it('User can like a blog', function() {
         cy.contains('view').click()
         cy.contains('likes 0')
         cy.contains('like').click()
         cy.contains('likes 1')
+      })
+
+      it('User can delete a blog', function() {
+        cy.contains('view').click()
+        cy.contains('remove').click()
+        cy.get('html').should('not.contain', 'A Guide on React')
+      })
+    })
+
+    describe('and a blog from another user exists', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'A Guide on React',
+          author: 'John Doe',
+          url: 'https://reactjs.org/'
+        })
+        cy.createUser({
+          name: 'First Last',
+          username: 'secondUser',
+          password: 'passwd'
+        })
+        cy.login({ username: 'secondUser', password: 'passwd' })
+      })
+  
+      it('User can not delete the blog', function() {
+        cy.contains('view').click()
+        cy.get('#blogs').should('not.contain', 'remove')
       })
     })
   })
