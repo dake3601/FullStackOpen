@@ -100,5 +100,38 @@ describe('Blog app', function() {
         cy.get('#blogs').should('not.contain', 'remove')
       })
     })
+
+    describe('and many blogs exist', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'first blog',
+          author: 'First Name',
+          url: 'https://url-one.com/',
+          likes: 10
+        })
+        cy.createBlog({
+          title: 'third blog',
+          author: 'Third Name',
+          url: 'https://url-three.com/',
+          likes: 1
+        })
+        cy.createBlog({
+          title: 'second blog',
+          author: 'Second Name',
+          url: 'https://url-two.com/',
+          likes: 5
+        })
+      })
+
+      it('Blogs are ordered from most liked to least', function() {
+        const likes = [10, 5, 1]
+        cy.get('.blog').then(blogs => {
+          blogs.each((i, el) => {
+            cy.wrap(el).contains('view').click()
+            cy.wrap(el).contains(`likes ${likes[i]}`)
+          })
+        })
+      })
+    })
   })
 })
