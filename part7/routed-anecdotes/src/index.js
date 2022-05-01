@@ -6,6 +6,5 @@ import App from './App'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>
     <App />
-  </Router>,
-  document.getElementById('root')
+  </Router>
 )
