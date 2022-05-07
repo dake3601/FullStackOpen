@@ -16,9 +16,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -35,13 +33,12 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password
+        username,
+        password
       })
       setUser(user)
       blogService.setToken(user.token)
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setMessage({
         info: 'Login Successful',
         succeed: true
@@ -70,35 +67,31 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setMessage({
-          info: `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-          succeed: true
-        })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog))
+      setMessage({
+        info: `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+        succeed: true
       })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    })
   }
 
   const likeBlog = (id, blogObject) => {
-    const likedBlog = blogs.map(blog => ({
+    const likedBlog = blogs.map((blog) => ({
       ...blog,
       likes: blog.likes + (blog.id === id)
     }))
-    blogService
-      .update(id, blogObject)
-      .then(() => {
-        setBlogs(likedBlog)
-      })
+    blogService.update(id, blogObject).then(() => {
+      setBlogs(likedBlog)
+    })
   }
 
   const removeBlog = (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      const removedBlog = blogs.filter(b => b.id !== blog.id)
+      const removedBlog = blogs.filter((b) => b.id !== blog.id)
       blogService
         .remove(blog.id)
         .then(() => {
@@ -126,9 +119,9 @@ const App = () => {
         <Notification message={message} />
         <form onSubmit={handleLogin}>
           <div>
-              username:
+            username:
             <input
-              id='username'
+              id="username"
               type="text"
               value={username}
               name="Username"
@@ -136,16 +129,16 @@ const App = () => {
             />
           </div>
           <div>
-              password:
+            password:
             <input
-              id='password'
+              id="password"
               type="password"
               value={password}
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button id='login-button' type="submit">
+          <button id="login-button" type="submit">
             login
           </button>
         </form>
@@ -159,24 +152,23 @@ const App = () => {
       <Notification message={message} />
       <div>
         {user.name} logged in
-        <button onClick={handleLogout}>
-            logout
-        </button>
+        <button onClick={handleLogout}>logout</button>
       </div>
       <br />
-      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
       <br />
-      <div id='blogs'>
-        {sortedBlogs.map(blog =>
-          <Blog key={blog.id}
+      <div id="blogs">
+        {sortedBlogs.map((blog) => (
+          <Blog
+            key={blog.id}
             blog={blog}
             updateBlog={likeBlog}
             remove={blog.user && blog.user.username === user.username}
             deleteBlog={removeBlog}
           />
-        )}
+        ))}
       </div>
     </div>
   )

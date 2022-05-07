@@ -34,12 +34,12 @@ const Blog = ({ blog, updateBlog, remove, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle} className='blog'>
-      <div style={hideWhenVisible} className='blogHide'>
+    <div style={blogStyle} className="blog">
+      <div style={hideWhenVisible} className="blogHide">
         {blog.title} by {blog.author}
         <button onClick={toggleVisibility}>view</button>
       </div>
-      <div style={showWhenVisible} className='blogShow'>
+      <div style={showWhenVisible} className="blogShow">
         {blog.title} <button onClick={toggleVisibility}>hide</button> {'\n'}
         {blog.url} {'\n'}
         likes {blog.likes} <button onClick={likeBlog}>like</button> {'\n'}
@@ -47,7 +47,8 @@ const Blog = ({ blog, updateBlog, remove, deleteBlog }) => {
         {remove && <button onClick={removeBlog}>remove</button>}
       </div>
     </div>
-  )}
+  )
+}
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,

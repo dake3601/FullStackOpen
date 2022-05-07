@@ -125,7 +125,7 @@ describe('Blog app', function () {
 
       it('Blogs are ordered from most liked to least', function () {
         const likes = [10, 5, 1]
-        cy.get('.blog').then(blogs => {
+        cy.get('.blog').then((blogs) => {
           blogs.each((i, el) => {
             cy.wrap(el).contains('view').click()
             cy.wrap(el).contains(`likes ${likes[i]}`)

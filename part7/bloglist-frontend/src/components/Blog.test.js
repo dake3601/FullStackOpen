@@ -16,12 +16,7 @@ describe('<Blog />', () => {
   }
 
   beforeEach(() => {
-    container = render(
-      <Blog
-        blog={blog}
-        updateBlog={mockHandler}
-      />
-    ).container
+    container = render(<Blog blog={blog} updateBlog={mockHandler} />).container
   })
 
   test('at start render title and author only', () => {
