@@ -1,19 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import { setNotification } from './reducers/notificationReducer'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
+  const dispatch = useDispatch()
   const blogFormRef = useRef()
 
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -39,23 +41,11 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      setMessage({
-        info: 'Login Successful',
-        succeed: true
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(setNotification('Login Successful', 5, true))
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessage({
-        info: 'wrong username or password',
-        succeed: false
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(setNotification('wrong username or password', 5, false))
     }
   }
 
@@ -69,13 +59,13 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog))
-      setMessage({
-        info: `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-        succeed: true
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        setNotification(
+          `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+          5,
+          true
+        )
+      )
     })
   }
 
@@ -98,13 +88,13 @@ const App = () => {
           setBlogs(removedBlog)
         })
         .catch(() => {
-          setMessage({
-            info: `Information of ${blog.title} has already been removed from server`,
-            succeed: false
-          })
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          dispatch(
+            setNotification(
+              `Information of ${blog.title} has already been removed from server`,
+              5,
+              false
+            )
+          )
           setBlogs(removedBlog)
         })
     }
@@ -116,7 +106,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={message} />
+        <Notification />
         <form onSubmit={handleLogin}>
           <div>
             username:
@@ -149,7 +139,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={message} />
+      <Notification />
       <div>
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
