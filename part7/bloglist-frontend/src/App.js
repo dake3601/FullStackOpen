@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import { setNotification } from './reducers/notificationReducer'
@@ -8,18 +8,21 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { initializeBlogs, createBlog, setBlogs } from './reducers/blogReducer'
+
 const App = () => {
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
   const blogFormRef = useRef()
 
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -57,26 +60,14 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog))
-      dispatch(
-        setNotification(
-          `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-          5,
-          true
-        )
+    dispatch(createBlog(blogObject))
+    dispatch(
+      setNotification(
+        `A new blog ${blogObject.title} by ${blogObject.author} added`,
+        5,
+        true
       )
-    })
-  }
-
-  const likeBlog = (id, blogObject) => {
-    const likedBlog = blogs.map((blog) => ({
-      ...blog,
-      likes: blog.likes + (blog.id === id)
-    }))
-    blogService.update(id, blogObject).then(() => {
-      setBlogs(likedBlog)
-    })
+    )
   }
 
   const removeBlog = (blog) => {
@@ -154,7 +145,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            updateBlog={likeBlog}
             remove={blog.user && blog.user.username === user.username}
             deleteBlog={removeBlog}
           />
