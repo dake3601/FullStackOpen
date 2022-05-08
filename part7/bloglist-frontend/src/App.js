@@ -8,7 +8,7 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-import { initializeBlogs, createBlog, setBlogs } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, removeBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -70,24 +70,9 @@ const App = () => {
     )
   }
 
-  const removeBlog = (blog) => {
+  const deleteBlog = (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      const removedBlog = blogs.filter((b) => b.id !== blog.id)
-      blogService
-        .remove(blog.id)
-        .then(() => {
-          setBlogs(removedBlog)
-        })
-        .catch(() => {
-          dispatch(
-            setNotification(
-              `Information of ${blog.title} has already been removed from server`,
-              5,
-              false
-            )
-          )
-          setBlogs(removedBlog)
-        })
+      dispatch(removeBlog(blog))
     }
   }
 
@@ -146,7 +131,7 @@ const App = () => {
             key={blog.id}
             blog={blog}
             remove={blog.user && blog.user.username === user.username}
-            deleteBlog={removeBlog}
+            deleteBlog={deleteBlog}
           />
         ))}
       </div>
