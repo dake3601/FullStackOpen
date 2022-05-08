@@ -1,17 +1,41 @@
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { likeBlog, removeBlog, commentBlog } from '../reducers/blogReducer'
 
-const Comments = ({ comments }) => {
-  if (comments.length === 0) {
-    return null
+const CommentsForm = ({ id }) => {
+  const dispatch = useDispatch()
+
+  const [comment, setComment] = useState('')
+
+  const handleComment = async (event) => {
+    event.preventDefault()
+    dispatch(commentBlog(id, { comment }))
+    setComment('')
   }
+  return (
+    <div>
+      <form onSubmit={handleComment}>
+        <input
+          id="comment"
+          type="text"
+          value={comment}
+          name="Comment"
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button type="submit">add comment</button>
+      </form>
+    </div>
+  )
+}
 
+const Comments = ({ blog }) => {
   return (
     <div>
       <h3>Comments</h3>
+      <CommentsForm id={blog.id} />
       <ul>
-        {comments.map((comment) => (
+        {blog.comments.map((comment) => (
           <li key={comment.id}>{comment.comment}</li>
         ))}
       </ul>
@@ -54,7 +78,7 @@ const Blog = ({ blog }) => {
         <p>Added by: {blog.user.name}</p>
         <p>{isAuthor && <button onClick={handleRemove}>remove</button>}</p>
       </div>
-      <Comments comments={blog.comments} />
+      <Comments blog={blog} />
     </div>
   )
 }
