@@ -67,7 +67,7 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            remove={blog.user && blog.user.username === user.username}
+            isAuthor={blog.user?.username === user?.username}
             deleteBlog={deleteBlog}
           />
         ))}

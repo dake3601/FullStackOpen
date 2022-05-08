@@ -12,6 +12,7 @@ module.exports = {
     'plugin:cypress/recommended',
     'prettier'
   ],
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true

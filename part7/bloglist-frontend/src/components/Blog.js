@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { likeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, remove, deleteBlog }) => {
+const Blog = ({ blog, isAuthor, deleteBlog }) => {
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
 
@@ -41,7 +41,7 @@ const Blog = ({ blog, remove, deleteBlog }) => {
         {blog.url} {'\n'}
         likes {blog.likes} <button onClick={handleLike}>like</button> {'\n'}
         {blog.author}
-        {remove && <button onClick={removeBlog}>remove</button>}
+        {isAuthor && <button onClick={removeBlog}>remove</button>}
       </div>
     </div>
   )
