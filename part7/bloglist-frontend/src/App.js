@@ -4,10 +4,9 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-
+import LoginForm from './components/LoginForm'
 import { initializeBlogs, createBlog, removeBlog } from './reducers/blogReducer'
 import { initializeUser, logoutUser } from './reducers/userReducer'
-import LoginForm from './components/LoginForm'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -67,7 +66,7 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            isAuthor={blog.user?.username === user?.username}
+            isAuthor={user && blog.user.username === user.username}
             deleteBlog={deleteBlog}
           />
         ))}
