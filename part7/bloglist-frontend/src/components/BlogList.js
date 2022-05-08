@@ -10,11 +10,10 @@ const BlogList = () => {
   const blogFormRef = useRef()
 
   const blogs = useSelector((state) => state.blogs)
-  const user = useSelector((state) => state.user)
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    dispatch(createBlog({ blogObject, user }))
+    dispatch(createBlog(blogObject))
   }
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)

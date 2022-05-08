@@ -2,6 +2,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
+const Comments = ({ comments }) => {
+  if (comments.length === 0) {
+    return null
+  }
+
+  return (
+    <div>
+      <h3>Comments</h3>
+      <ul>
+        {comments.map((comment) => (
+          <li key={comment.id}>{comment.comment}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 const Blog = ({ blog }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -37,6 +54,7 @@ const Blog = ({ blog }) => {
         <p>Added by: {blog.user.name}</p>
         <p>{isAuthor && <button onClick={handleRemove}>remove</button>}</p>
       </div>
+      <Comments comments={blog.comments} />
     </div>
   )
 }
