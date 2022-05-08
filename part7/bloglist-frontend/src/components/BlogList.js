@@ -1,9 +1,9 @@
 import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
-import { createBlog, removeBlog } from '../reducers/blogReducer'
+import { createBlog } from '../reducers/blogReducer'
 
 const BlogList = () => {
   const dispatch = useDispatch()
@@ -14,16 +14,19 @@ const BlogList = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    dispatch(createBlog(blogObject))
-  }
-
-  const deleteBlog = (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      dispatch(removeBlog(blog))
-    }
+    dispatch(createBlog({ blogObject, user }))
   }
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+    whiteSpace: 'pre-wrap'
+  }
 
   return (
     <div>
@@ -34,12 +37,9 @@ const BlogList = () => {
       <br />
       <div id="blogs">
         {sortedBlogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            isAuthor={user && blog.user.username === user.username}
-            deleteBlog={deleteBlog}
-          />
+          <div key={blog.id} style={blogStyle}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </div>
         ))}
       </div>
     </div>

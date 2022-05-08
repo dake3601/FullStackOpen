@@ -1,47 +1,41 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { likeBlog } from '../reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, isAuthor, deleteBlog }) => {
+const Blog = ({ blog }) => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [visible, setVisible] = useState(false)
+  const user = useSelector((state) => state.user)
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
+  if (!user || !blog) {
+    return null
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-    whiteSpace: 'pre-wrap'
-  }
+  const isAuthor = blog.user.username === user.username
 
   const handleLike = () => {
     dispatch(likeBlog(blog))
   }
 
-  const removeBlog = () => {
-    deleteBlog(blog)
+  const handleRemove = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      dispatch(removeBlog(blog))
+      navigate('/')
+    }
   }
 
   return (
-    <div style={blogStyle} className="blog">
-      <div style={hideWhenVisible} className="blogHide">
+    <div>
+      <h2>
         {blog.title} by {blog.author}
-        <button onClick={toggleVisibility}>view</button>
-      </div>
-      <div style={showWhenVisible} className="blogShow">
-        {blog.title} <button onClick={toggleVisibility}>hide</button> {'\n'}
-        {blog.url} {'\n'}
-        likes {blog.likes} <button onClick={handleLike}>like</button> {'\n'}
-        {blog.author}
-        {isAuthor && <button onClick={removeBlog}>remove</button>}
+      </h2>
+      <div>
+        <a href="blog.url">{blog.url}</a>
+        <p>
+          {blog.likes} likes <button onClick={handleLike}>like</button> {'\n'}
+        </p>
+        <p>Added by: {blog.user.name}</p>
+        <p>{isAuthor && <button onClick={handleRemove}>remove</button>}</p>
       </div>
     </div>
   )
