@@ -1,20 +1,19 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Routes, Route, useNavigate, useMatch } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
 import Blog from './components/Blog'
 import UsersPage from './components/UsersPage'
 import User from './components/User'
 import LoginForm from './components/LoginForm'
+import Menu from './components/Menu'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
-import { logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const user = useSelector((state) => state.user)
   const users = useSelector((state) => state.users)
   const blogs = useSelector((state) => state.blogs)
@@ -24,11 +23,6 @@ const App = () => {
     dispatch(initializeUser())
     dispatch(initializeUsers())
   }, [dispatch])
-
-  const handleLogout = () => {
-    dispatch(logoutUser())
-    navigate('/')
-  }
 
   const matchUser = useMatch('/users/:id')
   const selectedUser = matchUser
@@ -53,12 +47,8 @@ const App = () => {
   return (
     <div>
       <h1>Blog App</h1>
+      <Menu />
       <Notification />
-      <div>
-        {user.username} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
-      {/* <Menu /> */}
       <Routes>
         <Route path="/blogs/:id" element={<Blog blog={selectedBlog} />} />
         <Route path="/" element={<BlogList />} />
