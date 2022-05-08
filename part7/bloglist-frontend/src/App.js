@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -6,7 +6,8 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 
 import { initializeBlogs, createBlog, removeBlog } from './reducers/blogReducer'
-import { initializeUser, loginUser, logoutUser } from './reducers/userReducer' //initializeUser
+import { initializeUser, logoutUser } from './reducers/userReducer'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -20,13 +21,6 @@ const App = () => {
 
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    dispatch(loginUser({ username, password }))
-  }
 
   const handleLogout = () => {
     dispatch(logoutUser())
@@ -50,31 +44,7 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <Notification />
-        <form onSubmit={handleLogin}>
-          <div>
-            username:
-            <input
-              id="username"
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password:
-            <input
-              id="password"
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id="login-button" type="submit">
-            login
-          </button>
-        </form>
+        <LoginForm />
       </div>
     )
   }
