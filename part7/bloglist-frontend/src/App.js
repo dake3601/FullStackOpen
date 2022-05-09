@@ -11,6 +11,7 @@ import Menu from './components/Menu'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
+import { Stack, Text } from '@fluentui/react'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -36,17 +37,21 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
-        <h1>Blog App</h1>
-        <h2>Log in to application</h2>
+      <Stack
+        styles={{ root: { margin: '2em' } }}
+        tokens={{ childrenGap: 's1' }}
+      >
+        <Text variant="xxLarge">Blog App</Text>
+        <Text variant="xLarge">Log in to application</Text>
+        <Notification />
         <LoginForm />
-      </div>
+      </Stack>
     )
   }
 
   return (
-    <div>
-      <h1>Blog App</h1>
+    <Stack styles={{ root: { margin: '2em' } }} tokens={{ childrenGap: 's1' }}>
+      <Text variant="xxLarge">Blog App</Text>
       <Menu />
       <Notification />
       <Routes>
@@ -55,7 +60,7 @@ const App = () => {
         <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/users/:id" element={<User user={selectedUser} />} />
       </Routes>
-    </div>
+    </Stack>
   )
 }
 

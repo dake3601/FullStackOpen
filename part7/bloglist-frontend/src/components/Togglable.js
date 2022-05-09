@@ -1,5 +1,5 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
-import PropTypes from 'prop-types'
+import { DefaultButton, PrimaryButton } from '@fluentui/react'
 
 const Togglable = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
@@ -20,19 +20,19 @@ const Togglable = forwardRef((props, ref) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <PrimaryButton text={props.buttonLabel} onClick={toggleVisibility} />
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <DefaultButton
+          style={{ marginTop: 5 }}
+          text="cancel"
+          onClick={toggleVisibility}
+        />
       </div>
     </div>
   )
 })
-
-Togglable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
-}
 
 Togglable.displayName = 'Togglable'
 

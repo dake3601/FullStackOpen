@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/userReducer'
+import { PrimaryButton, TextField, Stack } from '@fluentui/react'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -13,34 +14,31 @@ const LoginForm = () => {
     dispatch(loginUser({ username, password }))
   }
 
+  const columnProps = {
+    tokens: { childrenGap: 5 },
+    styles: { root: { width: 300 } }
+  }
+
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <div>
-          username:
-          <input
-            id="username"
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password:
-          <input
-            id="password"
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button id="login-button" type="submit">
-          login
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin}>
+      <Stack {...columnProps}>
+        <TextField
+          label="Username"
+          type="text"
+          value={username}
+          onChange={({ target }) => setUsername(target.value)}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          canRevealPassword
+          revealPasswordAriaLabel="Show password"
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+        />
+        <PrimaryButton text="Login" id="login-button" type="submit" />
+      </Stack>
+    </form>
   )
 }
 

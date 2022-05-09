@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { MessageBar, MessageBarType } from '@fluentui/react'
 
 const Notification = ({ notification }) => {
   if (notification === null) {
@@ -7,17 +8,13 @@ const Notification = ({ notification }) => {
 
   const { message, succeed } = notification
 
-  const style = {
-    color: succeed ? 'green' : 'red',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10
-  }
+  const messageBarType = succeed ? MessageBarType.success : MessageBarType.error
 
-  return <div style={style}>{message}</div>
+  return (
+    <MessageBar messageBarType={messageBarType} isMultiline={false}>
+      {message}
+    </MessageBar>
+  )
 }
 
 const mapStateToProps = (state) => {

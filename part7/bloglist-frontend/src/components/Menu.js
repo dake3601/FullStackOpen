@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { Stack, CommandBarButton } from '@fluentui/react'
 import { logoutUser } from '../reducers/userReducer'
 
 const Menu = () => {
@@ -13,28 +14,29 @@ const Menu = () => {
     navigate('/')
   }
 
-  const padding = {
-    paddingRight: 5,
-    display: 'inline'
-  }
-
-  const menu = {
-    backgroundColor: 'lightgray'
+  const menuProps = {
+    items: [
+      {
+        key: 'logout',
+        text: 'Logout',
+        onClick: handleLogout
+      }
+    ]
   }
 
   return (
-    <div style={menu}>
-      <Link style={padding} to="/">
-        blogs
-      </Link>
-      <Link style={padding} to="/users">
-        users
-      </Link>
-      <div style={padding}>
-        {user.username} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
-    </div>
+    <Stack
+      horizontal
+      styles={{ root: { height: 44 } }}
+      style={{ display: 'flex', alignItems: 'center' }}
+    >
+      <CommandBarButton text="Blogs" onClick={() => navigate('/')} />
+      <CommandBarButton text="Users" onClick={() => navigate('/users')} />
+      <CommandBarButton
+        text={`${user.username} logged in`}
+        menuProps={menuProps}
+      />
+    </Stack>
   )
 }
 

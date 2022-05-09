@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fluentui/react": "^8.67.2",
     "@reduxjs/toolkit": "^1.8.1",
     "axios": "^0.21.1",
     "prop-types": "^15.8.1",
@@ -18,8 +19,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open",
-    "test:e2e": "cypress run",
     "eslint": "eslint .",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.js' --write"
   },
@@ -46,9 +45,7 @@
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^12.6.3",
-    "cypress": "^9.5.3",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.6.2"
   }
