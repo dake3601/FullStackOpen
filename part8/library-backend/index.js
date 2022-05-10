@@ -97,10 +97,16 @@ const typeDefs = gql`
     genres: [String!]!
   }
 
+  type Author {
+    name: String!
+    bookCount: ID!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks: [Book!]!
+    allAuthors: [Author!]!
   }
 `
 
@@ -109,6 +115,17 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: () => books,
+    allAuthors: () => {
+      const authorsMap = new Map()
+      authors.forEach((author) => authorsMap.set(author.name, 0))
+      books.forEach((book) =>
+        authorsMap.set(book.author, authorsMap.get(book.author) + 1)
+      )
+      return Array.from(authorsMap).map(([author, count]) => ({
+        name: author,
+        bookCount: count,
+      }))
+    },
   },
 }
 
