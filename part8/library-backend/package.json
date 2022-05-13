@@ -10,6 +10,8 @@
   "author": "Keven Arroyo",
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^3.7.0"
+    "apollo-server": "^3.7.0",
+    "dotenv": "^16.0.1",
+    "mongoose": "^6.3.3"
   }
 }
