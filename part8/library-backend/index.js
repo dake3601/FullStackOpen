@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
 const Author = require('./models/author')
 const Book = require('./models/book')
@@ -108,6 +108,18 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
+      if (args.title.length < 2) {
+        throw new UserInputError('Book title is too short', {
+          invalidArgs: args.title,
+        })
+      }
+
+      if (args.author.length < 4) {
+        throw new UserInputError('Book author name is too short', {
+          invalidArgs: args.author,
+        })
+      }
+
       const books = await Book.find({})
       if (books.find((b) => b.title === args.title)) {
         throw new UserInputError('Title must be unique', {
