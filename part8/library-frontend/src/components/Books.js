@@ -34,6 +34,7 @@ const Books = (props) => {
   return (
     <div>
       <h2>books</h2>
+      <p>{!genreFilter ? 'in all genres' : `in genre ${genreFilter}`}</p>
       <table>
         <tbody>
           <tr>
@@ -52,7 +53,9 @@ const Books = (props) => {
       </table>
       <button onClick={() => setGenreFilter(null)}>all</button>
       {[...genreSet].map((genre) => (
-        <button onClick={() => setGenreFilter(genre)}>{genre}</button>
+        <button key={genre} onClick={() => setGenreFilter(genre)}>
+          {genre}
+        </button>
       ))}
     </div>
   )
