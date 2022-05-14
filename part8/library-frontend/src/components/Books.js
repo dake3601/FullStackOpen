@@ -37,10 +37,6 @@ const Books = (props) => {
 
   const books = result.data.allBooks
 
-  const booksToShow = !genre
-    ? books
-    : books.filter((book) => book.genres.includes(genre))
-
   return (
     <div>
       <h2>books</h2>
@@ -62,7 +58,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {booksToShow.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
