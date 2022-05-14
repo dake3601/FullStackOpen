@@ -34,7 +34,17 @@ const Books = (props) => {
   return (
     <div>
       <h2>books</h2>
-      <p>{!genreFilter ? 'in all genres' : `in genre ${genreFilter}`}</p>
+      <p>
+        {!genreFilter ? (
+          <>
+            in <b>all</b> genres
+          </>
+        ) : (
+          <>
+            in genre <b>{genreFilter}</b>
+          </>
+        )}
+      </p>
       <table>
         <tbody>
           <tr>

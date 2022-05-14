@@ -38,7 +38,9 @@ const Books = (props) => {
   return (
     <div>
       <h2>Recommendations</h2>
-      <p>books in your favorite genre {genre}</p>
+      <p>
+        books in your favorite genre <b>{genre}</b>
+      </p>
       <table>
         <tbody>
           <tr>
