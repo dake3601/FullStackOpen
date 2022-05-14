@@ -69,7 +69,10 @@ const Books = (props) => {
       </table>
       <button onClick={() => setGenre(null)}>all</button>
       {genres.map((genre) => (
-        <button key={genre} onClick={() => setGenre(genre)}>
+        <button
+          key={genre}
+          onClick={() => setGenre(genre) || result.refetch({ genre: genre })}
+        >
           {genre}
         </button>
       ))}
