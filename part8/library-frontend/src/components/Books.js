@@ -1,12 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
-  const [genreFilter, setGenreFilter] = useState(null)
+  const [genre, setGenre] = useState('')
+  const [genres, setGenres] = useState([])
 
-  const result = useQuery(ALL_BOOKS)
+  const result = useQuery(ALL_BOOKS, {
+    variables: { genre },
+  })
+
+  useEffect(() => {
+    if (result.data && !genre) {
+      const books = result.data.allBooks
+      const genreSet = new Set()
+      books.forEach((book) =>
+        book.genres.forEach((genre) => genreSet.add(genre))
+      )
+      setGenres([...genreSet])
+    }
+  }, [result.data]) // eslint-disable-line
 
   if (!props.show) {
     return null
@@ -23,25 +37,21 @@ const Books = (props) => {
 
   const books = result.data.allBooks
 
-  const genreSet = new Set()
-
-  books.forEach((book) => book.genres.forEach((genre) => genreSet.add(genre)))
-
-  const booksToShow = !genreFilter
+  const booksToShow = !genre
     ? books
-    : books.filter((book) => book.genres.includes(genreFilter))
+    : books.filter((book) => book.genres.includes(genre))
 
   return (
     <div>
       <h2>books</h2>
       <p>
-        {!genreFilter ? (
+        {!genre ? (
           <>
             in <b>all</b> genres
           </>
         ) : (
           <>
-            in genre <b>{genreFilter}</b>
+            in genre <b>{genre}</b>
           </>
         )}
       </p>
@@ -61,9 +71,9 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
-      <button onClick={() => setGenreFilter(null)}>all</button>
-      {[...genreSet].map((genre) => (
-        <button key={genre} onClick={() => setGenreFilter(genre)}>
+      <button onClick={() => setGenre(null)}>all</button>
+      {genres.map((genre) => (
+        <button key={genre} onClick={() => setGenre(genre)}>
           {genre}
         </button>
       ))}
