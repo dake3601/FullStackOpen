@@ -38,6 +38,7 @@ export const CREATE_BOOK = gql`
     ) {
       title
       published
+      genres
       author {
         name
       }
@@ -76,6 +77,7 @@ export const BOOK_ADDED = gql`
     bookAdded {
       title
       published
+      genres
       author {
         name
       }
