@@ -1,0 +1,16 @@
+{
+  "name": "exercisecalculator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node -- bmiCalculator.ts"
+  },
+  "author": "Keven Arroyo",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  }
+}
