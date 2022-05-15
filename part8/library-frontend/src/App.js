@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useSubscription } from '@apollo/client'
+import { BOOK_ADDED } from './queries'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -8,6 +10,13 @@ import Recommend from './components/Recommend'
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const book = subscriptionData.data.bookAdded
+      window.alert(`New book: ${book.title} by ${book.author.name} added`)
+    },
+  })
 
   if (!token) {
     return (
