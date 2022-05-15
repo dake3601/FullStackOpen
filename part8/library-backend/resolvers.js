@@ -15,54 +15,26 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      // filters missing
-      let books = []
-      if (!args.genre && !args.author) {
-        books = await Book.find({}).populate('author')
-      } else if (!args.genre) {
+      let query = {}
+      if (args.author) {
         const author = await Author.findOne({ name: args.author })
-        if (!author) {
-          return books
-        }
-        books = await Book.find({ author: author._id }).populate('author')
-      } else if (!args.author) {
-        books = await Book.find({ genres: { $in: [args.genre] } }).populate(
-          'author'
-        )
-      } else {
-        const author = await Author.findOne({ name: args.author })
-        if (!author) {
-          return books
-        }
-        books = await Book.find({
-          author: author._id,
-          genres: { $in: [args.genre] },
-        }).populate('author')
+        query.author = author._id
       }
-      const authorsMap = new Map()
-      books.forEach((book) => authorsMap.set(book.author.name, 0))
-      books.forEach((book) =>
-        authorsMap.set(book.author.name, authorsMap.get(book.author.name) + 1)
-      )
-      for (var i = 0; i < books.length; i++) {
-        books[i].author.bookCount = authorsMap.get(books[i].author.name)
+      if (args.genre) {
+        query.genres = { $in: [args.genre] }
       }
+      const books = await Book.find(query).populate('author')
+      books.forEach((book) => {
+        book.author.bookCount = book.author.books.length
+      })
       return books
     },
     allAuthors: async () => {
       const authors = await Author.find({})
-      const books = await Book.find({}).populate('author')
-      const authorsMap = new Map()
-      const authorBorn = new Map()
-      authors.forEach((author) => authorBorn.set(author.name, author.born))
-      authors.forEach((author) => authorsMap.set(author.name, 0))
-      books.forEach((book) =>
-        authorsMap.set(book.author.name, authorsMap.get(book.author.name) + 1)
-      )
-      return Array.from(authorsMap).map(([author, count]) => ({
-        name: author,
-        born: authorBorn.get(author),
-        bookCount: count,
+      return authors.map((author) => ({
+        name: author.name,
+        bookCount: author.books.length,
+        books: null,
       }))
     },
     me: (root, args, context) => {
@@ -87,33 +59,25 @@ const resolvers = {
         })
       }
 
-      const books = await Book.find({})
-      if (books.find((b) => b.title === args.title)) {
+      const duplicated = await Book.findOne({ title: args.title })
+      if (duplicated) {
         throw new UserInputError('Title must be unique', {
           invalidArgs: args.title,
         })
       }
 
-      const authors = await Author.find({})
-      const authorsNames = authors.map((authors) => authors.name)
-      if (!authorsNames.includes(args.author)) {
-        const author = new Author({ name: args.author })
-        await author.save()
+      let author = await Author.findOne({ name: args.author })
+      if (!author) {
+        author = new Author({ name: args.author })
       }
-
-      const author = await Author.findOne({ name: args.author })
+      await author.save()
 
       const book = new Book({ ...args, author: author._id })
       await book.save()
-      await book.populate('author')
-
-      const bookCount = books.reduce(
-        (prev, currBook) =>
-          prev + (currBook.author.toString() === author._id.toString()),
-        0
-      )
-
-      book.author.bookCount = 1 + bookCount
+      author.books.push(book._id)
+      await author.save()
+      author.bookCount = author.books.length
+      book.author = author
 
       pubsub.publish('BOOK_ADDED', { bookAdded: book })
 
@@ -130,12 +94,7 @@ const resolvers = {
 
       author.born = args.setBornTo
       await author.save()
-      const books = await Book.find({})
-      author.bookCount = books.reduce(
-        (prev, currBook) =>
-          prev + (currBook.author.toString() === author._id.toString()),
-        0
-      )
+      author.bookCount = author.books.length
       return author
     },
     createUser: async (root, args) => {
