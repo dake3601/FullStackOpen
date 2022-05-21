@@ -16,32 +16,30 @@ const parseBMI = (args: Array<string>): person => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): void => {
+const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / (height / 100) ** 2;
-  let result = '';
   if (bmi < 16) {
-    result = 'Underweight (Severe thinness)';
+    return 'Underweight (Severe thinness)';
   } else if (bmi < 17 && bmi >= 16) {
-    result = 'Underweight (Moderate thinness)';
+    return 'Underweight (Moderate thinness)';
   } else if (bmi < 18.5 && bmi >= 17) {
-    result = 'Underweight (Mild thinness)';
+    return 'Underweight (Mild thinness)';
   } else if (bmi < 25 && bmi >= 18.5) {
-    result = 'Normal (Healthy weight)';
+    return 'Normal (Healthy weight)';
   } else if (bmi < 30 && bmi >= 25) {
-    result = 'Overweight (Pre-obese)';
+    return 'Overweight (Pre-obese)';
   } else if (bmi < 35 && bmi >= 30) {
-    result = 'Obese (Class I)';
+    return 'Obese (Class I)';
   } else if (bmi < 40 && bmi >= 35) {
-    result = 'Obese (Class II)';
-  } else if (bmi >= 40) {
-    result = 'Obese (Class III)';
+    return 'Obese (Class II)';
   }
-  console.log(`The person's BMI is in the range: ${result}.`);
+  return 'Obese (Class III)';
 };
 
 try {
   const { height, weight } = parseBMI(process.argv);
-  calculateBmi(height, weight);
+  const result = calculateBmi(height, weight);
+  console.log(`The person's BMI is in the range: ${result}.`);
 } catch (error: unknown) {
   let errorMessage = 'Something bad happened.';
   if (error instanceof Error) {
@@ -49,3 +47,5 @@ try {
   }
   console.log(errorMessage);
 }
+
+export { calculateBmi };
