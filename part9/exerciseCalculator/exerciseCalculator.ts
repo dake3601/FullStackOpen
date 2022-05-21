@@ -38,7 +38,7 @@ const parseExcercise = (args: Array<string>): ExcerciseValues => {
 const calculateExercises = (
   target: number,
   dailyExercise: Array<number>
-): void => {
+): excercisesResult => {
   const periodLength = dailyExercise.length;
   const trainingDays = dailyExercise.reduce(
     (prev, curr) => prev + Number(curr > 0),
@@ -58,7 +58,7 @@ const calculateExercises = (
   } else if (average >= target / 2) {
     rating = 2;
   }
-  const result: excercisesResult = {
+  return {
     periodLength,
     trainingDays,
     target,
@@ -67,12 +67,12 @@ const calculateExercises = (
     rating,
     ratingDescription: ratingString[rating],
   };
-  console.log(result);
 };
 
 try {
   const { target, dailyExercise } = parseExcercise(process.argv);
-  calculateExercises(target, dailyExercise);
+  const result = calculateExercises(target, dailyExercise);
+  console.log(result);
 } catch (error: unknown) {
   let errorMessage = 'Something bad happened.';
   if (error instanceof Error) {
@@ -80,3 +80,5 @@ try {
   }
   console.log(errorMessage);
 }
+
+export { calculateExercises };
