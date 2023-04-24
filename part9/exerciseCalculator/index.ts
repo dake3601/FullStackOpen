@@ -33,28 +33,28 @@ app.post('/exercises', (request, response) => {
       error: 'parameters missing',
     });
   }
-
-  if (isNaN(Number(data.target)) || !Array.isArray(data.daily_exercises)) {
+  
+  if (typeof data.target != 'number' || !Array.isArray(data.daily_exercises)) {
     return response.send({
       error: 'malformatted parameters',
     });
   }
 
-  const target: number = data.target;
-  const daily_exercises: Array<number> = data.daily_exercises;
-
-  for (let i = 0; i < daily_exercises.length; i++) {
-    if (isNaN(Number(daily_exercises[i]))) {
+  for (let i = 0; i < data.daily_exercises.length; i++) {
+    if (typeof data.daily_exercises[i] != 'number') {
       return response.send({
         error: 'malformatted parameters',
       });
     }
   }
 
+  const target: number = data.target;
+  const daily_exercises: Array<number> = data.daily_exercises;
+
   return response.send(calculateExercises(target, daily_exercises));
 });
 
-const PORT = 3003;
+const PORT = 3002;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
